@@ -13,6 +13,7 @@ gulp.task 'folder', ->
     source:
       'main.coffee': ''
       'main.css': ''
+      'index.cirru': ''
     'README.md': ''
     build: {}
 
@@ -20,9 +21,17 @@ gulp.task 'watch', ->
   plumber = require 'gulp-plumber'
   coffee = require 'gulp-coffee'
   watch = require 'gulp-watch'
+  html = require 'gulp-cirru-html'
   transform = require 'vinyl-transform'
   browserify = require 'browserify'
   rename = require 'gulp-rename'
+
+  watch glob: 'source/**/*.cirru', emitOnGlob: no, (files) ->
+    gulp
+    .src 'source/index.cirru'
+    .pipe plumber()
+    .pipe html(data: {dev: yes})
+    .pipe gulp.dest('./')
 
   watch glob: 'source/**/*.coffee', emitOnGlob: no, (files) ->
     files
@@ -53,6 +62,13 @@ gulp.task 'coffee', ->
   .src 'source/**/*.coffee', base: 'source/'
   .pipe (coffee bare: yes)
   .pipe (gulp.dest 'build/js/')
+
+gulp.task 'html', ->
+  html = require 'gulp-cirru-html'
+  gulp
+  .src 'source/index.cirru'
+  .pipe html(data: {dev: dev})
+  .pipe gulp.dest('.')
 
 gulp.task 'jsmin', ->
   source = require 'vinyl-source-stream'
@@ -108,13 +124,13 @@ gulp.task 'clean', (cb) ->
 
 gulp.task 'dev', ->
   sequence = require 'run-sequence'
-  sequence 'clean', ['coffee', 'vendor'], 'js'
+  sequence 'clean', ['html', 'coffee', 'vendor'], 'js'
 
 gulp.task 'build', ->
   dev = no
   sequence = require 'run-sequence'
   sequence 'clean',
-    ['coffee'], ['jsmin', 'vendor'],
+    ['coffee', 'html'], ['jsmin', 'vendor'],
     'prefixer', 'cssmin'
 
 gulp.task 'rsync', ->

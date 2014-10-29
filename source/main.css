@@ -1,0 +1,38 @@
+
+body {
+  margin: 0;
+}
+
+body, input, button {
+  font-size: 16px;
+  line-height: 2em;
+}
+
+.app-layout {
+  margin: 40px 20px;
+}
+
+form {
+  margin: 20px 0;
+}
+
+form > * {
+  margin-right: 0.5em;
+}
+
+input {
+  outline: none;
+  padding: 0 0.5em;
+}
+
+input:focus {
+  border-color: blue;
+}
+
+input.check {
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+}
